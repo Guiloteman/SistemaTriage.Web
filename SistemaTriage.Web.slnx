@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SistemaTriage.Tests/SistemaTriage.Tests.csproj" />
+  <Project Path="SistemaTriage.Web/SistemaTriage.Web.csproj" />
+</Solution>
