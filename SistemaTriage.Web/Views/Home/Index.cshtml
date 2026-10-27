@@ -1,8 +1,96 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Página Principal - Sistema Triage";
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4">Sistema de Gestión de Triage y Urgencias</h1>
+    <p class="lead text-muted">Bienvenido al sistema clínico integrado.</p>
+    <hr class="my-4" />
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="alert alert-info">
+            ¡Hola, <strong>@User.Identity?.Name</strong>!
+            Roles asignados: <span class="badge bg-primary">@(roles.Any() ? string.Join(", ", roles) : "Sin roles")</span>
+        </div>
+
+        <div class="row mt-4 justify-content-center">
+            <!-- Botón para Recepción / Pacientes -->
+            @if (roles.Contains("Recepcion") || roles.Contains("Admin"))
+            {
+                <div class="col-md-3 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title">Recepción</h5>
+                                <p class="card-text text-muted">Gestionar el registro y alta de pacientes.</p>
+                            </div>
+                            <a asp-controller="Pacientes" asp-action="Index" class="btn btn-primary mt-3">Ir a Pacientes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Botón para Enfermería -->
+            @if (roles.Contains("Enfermero") || roles.Contains("Admin"))
+            {
+                <div class="col-md-3 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title">Enfermería (Triage)</h5>
+                                <p class="card-text text-muted">Registrar signos vitales y calcular urgencia.</p>
+                            </div>
+                            <a asp-controller="Triages" asp-action="Create" class="btn btn-warning mt-3">Nuevo Triage</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Botón para Médicos -->
+            @if (roles.Contains("Medico") || roles.Contains("Admin"))
+            {
+                <div class="col-md-3 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title">Atención Médica</h5>
+                                <p class="card-text text-muted">Ver cola de espera y atender pacientes.</p>
+                            </div>
+                            <a asp-controller="Medicos" asp-action="Index" class="btn btn-success mt-3">Cola Médica</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Botón para Administradores -->
+            @if (roles.Contains("Admin"))
+            {
+                <div class="col-md-3 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title">Administración</h5>
+                                <p class="card-text text-muted">Gestionar usuarios y asignar roles del sistema.</p>
+                            </div>
+                            <a asp-controller="Admin" asp-action="Index" class="btn btn-dark mt-3">Panel Admin</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="mt-4">
+            <p>Por favor, inicia sesión para acceder a las funcionalidades del sistema según tu rol.</p>
+            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/Login">Iniciar Sesión</a>
+        </div>
+    }
 </div>

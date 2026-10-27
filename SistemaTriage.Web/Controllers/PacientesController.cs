@@ -6,7 +6,7 @@ using SistemaTriage.Web.Models;
 
 namespace SistemaTriage.Web.Controllers
 {
-    [Authorize(Roles = "Recepcion,Enfermero,Medico")]
+    [Authorize(Roles = "Recepcion,Enfermero,Medico, Admin")]
     public class PacientesController : Controller
     {
         private readonly ApplicationDbContext _context;

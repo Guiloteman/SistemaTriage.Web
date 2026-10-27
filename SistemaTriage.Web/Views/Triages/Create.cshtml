@@ -1,0 +1,58 @@
+﻿@model SistemaTriage.Web.Models.Triage
+
+@{
+    ViewData["Title"] = "Evaluación de Triage";
+}
+
+<div class="container mt-4">
+    <h2>Evaluación de Triage</h2>
+    <h4 class="text-muted">Paciente: @ViewBag.PacienteNombre</h4>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                @if (ViewBag.PacienteNombre == null)
+                {
+                    <div class="form-group mb-3">
+                        <label asp-for="PacienteId" class="control-label">Seleccionar Paciente (DNI)</label>
+                        <select asp-for="PacienteId" class="form-control" asp-items="ViewBag.PacienteId"></select>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="PacienteId" value="@ViewBag.PacienteId" />
+                }
+
+                <div class="form-group mb-3">
+                    <label asp-for="Temperatura" class="control-label">Temperatura (°C)</label>
+                    <input asp-for="Temperatura" class="form-control" type="number" step="0.1" placeholder="Ej. 37.5" />
+                    <span asp-validation-for="Temperatura" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="SaturacionOxigeno" class="control-label">Saturación de Oxígeno (%)</label>
+                    <input asp-for="SaturacionOxigeno" class="form-control" type="number" placeholder="Ej. 98" />
+                    <span asp-validation-for="SaturacionOxigeno" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="FrecuenciaCardiaca" class="control-label">Frecuencia Cardíaca (bpm)</label>
+                    <input asp-for="FrecuenciaCardiaca" class="form-control" type="number" placeholder="Ej. 80" />
+                    <span asp-validation-for="FrecuenciaCardiaca" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Calcular Triage y Generar Turno" class="btn btn-primary" />
+                    <a asp-controller="Pacientes" asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

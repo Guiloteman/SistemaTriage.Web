@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SistemaTriage.Web.Models.Turno>
+
+@{
+    ViewData["Title"] = "Cola de Espera Médica";
+}
+
+<div class="container mt-4">
+    <h2>Cola de Espera - Atención Médica</h2>
+    <p class="text-muted">Pacientes en espera ordenados automáticamente por prioridad clínica de Triage.</p>
+    <hr />
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            No hay pacientes en espera en este momento.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Urgencia</th>
+                    <th>DNI</th>
+                    <th>Paciente</th>
+                    <th>Temperatura</th>
+                    <th>Saturación O2</th>
+                    <th>F. Cardíaca</th>
+                    <th>Hora de Evaluación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    // Asignamos una clase CSS de Bootstrap según el nivel de urgencia
+                    var badgeClass = item.Triage?.NivelUrgencia switch
+                    {
+                        NivelUrgencia.Rojo => "bg-danger",
+                        NivelUrgencia.Naranja => "bg-warning text-dark",
+                        NivelUrgencia.Amarillo => "bg-info text-dark",
+                        _ => "bg-success"
+                    };
+
+                    <tr>
+                        <td>
+                            <span class="badge @badgeClass fs-6">@item.Triage?.NivelUrgencia</span>
+                        </td>
+                        <td>@item.Paciente?.Dni</td>
+                        <td>@item.Paciente?.Nombre @item.Paciente?.Apellido</td>
+                        <td>@item.Triage?.Temperatura °C</td>
+                        <td>@item.Triage?.SaturacionOxigeno %</td>
+                        <td>@item.Triage?.FrecuenciaCardiaca bpm</td>
+                        <td>@item.Triage?.FechaEvaluacion.ToString("g")</td>
+                        <td>
+                            <form asp-action="Atender" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-success btn-sm">Atender Paciente</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

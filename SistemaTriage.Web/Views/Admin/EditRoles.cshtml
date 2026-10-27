@@ -1,0 +1,33 @@
+﻿@model SistemaTriage.Web.Controllers.EditarRolesViewModel
+
+@{
+    ViewData["Title"] = "Modificar Roles";
+}
+
+<div class="container mt-4">
+    <h2>Modificar Roles para el usuario</h2>
+    <h4 class="text-muted">@Model.Email</h4>
+    <hr />
+
+    <form asp-action="EditRoles">
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="card p-3 mb-3">
+            @for (int i = 0; i < Model.RolesAsignados.Count; i++)
+            {
+                <div class="form-check m-2">
+                    <input type="hidden" asp-for="@Model.RolesAsignados[i].NombreRol" />
+                    <input class="form-check-input" asp-for="@Model.RolesAsignados[i].Seleccionado" />
+                    <label class="form-check-label font-weight-bold" asp-for="@Model.RolesAsignados[i].Seleccionado">
+                        @Model.RolesAsignados[i].NombreRol
+                    </label>
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
